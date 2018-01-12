@@ -6,12 +6,12 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' yearn(TreEvo) # A package on github, not CRAN (yet)
+#' yearn(laser) # A package that was on CRAN but has been removed.
 #' }
 #'
 #' @details
 #' See the readme file. Basically, this tries to load an installed package. If that fails, it then looks (in order) on Bioconductor, CRAN, GitHub's CRAN mirror, and other GitHub repositories for the package and installs it if it can find it.
-yearn <- function(pkg, maxdist=2, username.pref = c("cran", "ropensci", "rstudio", "tidyverse", "hadley", "yihui", "RcppCore", "eddelbuettel", "ropenscilabs", "hrbrmstr", "thej022214", "bomeara")) {
+yearn <- function(pkg, maxdist=0, username.pref = c("cran", "ropensci", "rstudio", "tidyverse", "hadley", "yihui", "RcppCore", "eddelbuettel", "ropenscilabs", "hrbrmstr", "thej022214", "bomeara")) {
   original.repos <- options("repos")
   if(original.repos=='@CRAN@') {
     options(repos = 'https://cloud.r-project.org/')
@@ -27,7 +27,7 @@ yearn <- function(pkg, maxdist=2, username.pref = c("cran", "ropensci", "rstudio
       }
     } else {
       print(paste(pkg, "not installed, now going to try to find it on CRAN or Bioconductor"))
-    #  source("https://bioconductor.org/biocLite.R")
+      source("https://bioconductor.org/biocLite.R")
       on.repo <- utils::available.packages(repos=BiocInstaller::biocinstallRepos())[,"Package"]
       to.install <- on.repo[grepl(paste0('^', pkg, '$'),on.repo,ignore.case=TRUE)] #based on answer from https://stackoverflow.com/questions/39996324/case-insensitive-package-installation-ignore-case-while-installing-packages/39996637
       if(length(to.install)==1 && pkg != to.install) {
